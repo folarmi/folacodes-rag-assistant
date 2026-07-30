@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Folacodes Technologies Internal Policy Assistant"
+    />
+
+    <title>Folacodes Policy Assistant</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-logo">F</div>
+
+          <div>
+            <h1>Folacodes</h1>
+            <p>Internal Policy Assistant</p>
+          </div>
+        </div>
+
+        <section class="sidebar-section">
+          <p class="sidebar-label">What you can ask</p>
+
+          <button
+            class="suggestion-button"
+            type="button"
+            data-question="How many annual leave days do employees receive?"
+          >
+            Annual leave entitlement
+          </button>
+
+          <button
+            class="suggestion-button"
+            type="button"
+            data-question="What should I do if I lose my laptop?"
+          >
+            Lost company laptop
+          </button>
+
+          <button
+            class="suggestion-button"
+            type="button"
+            data-question="How do I submit an expense claim?"
+          >
+            Expense claim process
+          </button>
+
+          <button
+            class="suggestion-button"
+            type="button"
+            data-question="How do I request new software?"
+          >
+            Request new software
+          </button>
+        </section>
+
+        <div class="sidebar-footer">
+          <p>
+            Answers are generated only from approved Folacodes company
+            documents.
+          </p>
+        </div>
+      </aside>
+
+      <section class="chat-panel">
+        <header class="chat-header">
+          <div>
+            <p class="eyebrow">Internal knowledge assistant</p>
+            <h2>Company Policy Support</h2>
+          </div>
+
+          <div class="status-badge">
+            <span class="status-dot"></span>
+            Online
+          </div>
+        </header>
+
+        <section id="chatMessages" class="chat-messages" aria-live="polite">
+          <div class="message assistant-message">
+            <div class="message-avatar">F</div>
+
+            <div class="message-content">
+              <p class="message-author">Folacodes Assistant</p>
+
+              <div class="message-bubble">
+                <p>
+                  Hello. Ask me a question about Folacodes company policies,
+                  procedures, forms, or internal guides.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div id="errorMessage" class="error-message" role="alert" hidden></div>
+
+        <form id="questionForm" class="question-form">
+          <label class="sr-only" for="questionInput">
+            Ask a company question
+          </label>
+
+          <div class="input-wrapper">
+            <textarea
+              id="questionInput"
+              name="question"
+              rows="1"
+              maxlength="1000"
+              placeholder="Ask about leave, expenses, security, remote work..."
+              required
+            ></textarea>
+
+            <button
+              id="submitButton"
+              class="submit-button"
+              type="submit"
+              aria-label="Send question"
+            >
+              <span class="button-text">Send</span>
+              <span class="button-icon" aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <div class="form-footer">
+            <p>Press Enter to send. Use Shift + Enter for a new line.</p>
+            <p><span id="characterCount">0</span>/1000</p>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+  </body>
+</html>

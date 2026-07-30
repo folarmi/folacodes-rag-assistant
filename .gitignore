@@ -1,13 +1,8 @@
+.venv/
 __pycache__/
 *.pyc
-.venv/
-venv/
 .env
-
-vectorstore/chroma_db/
-
+vectorstore/*
+!vectorstore/.gitkeep
 .pytest_cache/
-
-.vscode/
-
 .DS_Store
