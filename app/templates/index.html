@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <meta
@@ -65,6 +66,26 @@
           </button>
         </section>
 
+        <section class="sidebar-section history-section">
+          <div class="history-heading">
+            <p class="sidebar-label">Recent questions</p>
+
+            <button
+              id="refreshHistoryButton"
+              class="history-refresh-button"
+              type="button"
+              aria-label="Refresh recent questions"
+              title="Refresh history"
+            >
+              ↻
+            </button>
+          </div>
+
+          <div id="historyList" class="history-list">
+            <p class="history-empty">No recent questions yet.</p>
+          </div>
+        </section>
+
         <div class="sidebar-footer">
           <p>
             Answers are generated only from approved Folacodes company
@@ -99,6 +120,8 @@
                   procedures, forms, or internal guides.
                 </p>
               </div>
+
+              <p class="message-time" data-current-time></p>
             </div>
           </div>
         </section>
