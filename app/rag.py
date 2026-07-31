@@ -18,6 +18,15 @@ from app.config import (
 from app.prompts import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE
 
 
+MAX_DISPLAYED_SOURCES = 2
+MAX_SOURCE_DISTANCE = 0.85
+
+REFUSAL_MESSAGE = (
+    "I could not find enough information in the available "
+    "company documents to answer this question."
+)
+
+
 @dataclass
 class Source:
     """A document source used to generate an answer."""
@@ -73,14 +82,15 @@ class RAGService:
         )
 
     @staticmethod
-    def _get_section(metadata: dict[str, Any]) -> str:
+    def get_section(metadata: dict[str, Any]) -> str:
         """Return the most specific available section heading."""
 
-        return (
+        return str(
             metadata.get("heading_3")
             or metadata.get("heading_2")
             or metadata.get("heading_1")
-            or "Unknown section"
+            or metadata.get("section")
+            or "General"
         )
 
     def retrieve(
@@ -100,7 +110,25 @@ class RAGService:
             k=top_k or TOP_K,
         )
 
-    def _format_context(
+    def filter_results(
+        self,
+        results: list[tuple[Document, float]],
+    ) -> list[tuple[Document, float]]:
+        """
+        Remove weak results and limit how many sources are displayed.
+
+        Chroma distance scores are lower when results are more similar.
+        """
+
+        filtered_results = [
+            (document, distance)
+            for document, distance in results
+            if distance <= MAX_SOURCE_DISTANCE
+        ]
+
+        return filtered_results[:MAX_DISPLAYED_SOURCES]
+
+    def format_context(
         self,
         results: list[tuple[Document, float]],
     ) -> str:
@@ -108,12 +136,21 @@ class RAGService:
 
         context_blocks: list[str] = []
 
-        for index, (document, distance) in enumerate(results, start=1):
+        for index, (document, distance) in enumerate(
+            results,
+            start=1,
+        ):
             metadata = document.metadata
 
-            title = metadata.get("title", "Unknown document")
-            section = self._get_section(metadata)
-            source = metadata.get("source", "Unknown source")
+            title = metadata.get(
+                "title",
+                "Unknown document",
+            )
+            section = self.get_section(metadata)
+            source = metadata.get(
+                "source",
+                "Unknown source",
+            )
             document_type = metadata.get(
                 "document_type",
                 "Unknown",
@@ -136,7 +173,7 @@ class RAGService:
 
         return "\n\n---\n\n".join(context_blocks)
 
-    def _build_sources(
+    def build_sources(
         self,
         results: list[tuple[Document, float]],
     ) -> list[Source]:
@@ -149,18 +186,24 @@ class RAGService:
 
             sources.append(
                 Source(
-                    title=metadata.get(
-                        "title",
-                        "Unknown document",
+                    title=str(
+                        metadata.get(
+                            "title",
+                            "Unknown document",
+                        )
                     ),
-                    section=self._get_section(metadata),
-                    source=metadata.get(
-                        "source",
-                        "Unknown source",
+                    section=self.get_section(metadata),
+                    source=str(
+                        metadata.get(
+                            "source",
+                            "Unknown source",
+                        )
                     ),
-                    document_type=metadata.get(
-                        "document_type",
-                        "Unknown",
+                    document_type=str(
+                        metadata.get(
+                            "document_type",
+                            "Unknown",
+                        )
                     ),
                     chunk_id=metadata.get(
                         "chunk_id",
@@ -179,23 +222,41 @@ class RAGService:
     ) -> RAGResponse:
         """Retrieve context and generate a grounded answer."""
 
-        results = self.retrieve(question, top_k=top_k)
+        clean_question = question.strip()
 
-        if not results:
+        if not clean_question:
+            raise ValueError("Question cannot be empty.")
+
+        retrieved_results = self.retrieve(
+            clean_question,
+            top_k=top_k,
+        )
+
+        if not retrieved_results:
             return RAGResponse(
-                question=question,
-                answer=(
-                    "I could not find enough information in the available "
-                    "company documents to answer this question."
-                ),
+                question=clean_question,
+                answer=REFUSAL_MESSAGE,
                 sources=[],
             )
 
-        context = self._format_context(results)
+        filtered_results = self.filter_results(
+            retrieved_results,
+        )
+
+        # Give the model the best results even when all candidates are
+        # above the display threshold. This allows it to determine
+        # whether the available context is sufficient.
+        context_results = (
+            filtered_results
+            if filtered_results
+            else retrieved_results[:MAX_DISPLAYED_SOURCES]
+        )
+
+        context = self.format_context(context_results)
 
         user_prompt = USER_PROMPT_TEMPLATE.format(
             context=context,
-            question=question.strip(),
+            question=clean_question,
         )
 
         response = self.llm.invoke(
@@ -208,11 +269,17 @@ class RAGService:
         answer = (
             response.content.strip()
             if isinstance(response.content, str)
-            else str(response.content)
+            else str(response.content).strip()
         )
 
+        # Do not show weak or irrelevant sources when the model refuses.
+        if REFUSAL_MESSAGE.lower() in answer.lower():
+            sources: list[Source] = []
+        else:
+            sources = self.build_sources(filtered_results)
+
         return RAGResponse(
-            question=question.strip(),
+            question=clean_question,
             answer=answer,
-            sources=self._build_sources(results),
+            sources=sources,
         )

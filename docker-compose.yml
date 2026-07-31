@@ -1,0 +1,32 @@
+services:
+  folacodes-rag:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: folacodes-rag-assistant
+
+    env_file:
+      - .env
+
+    ports:
+      - "${PORT:-5001}:${PORT:-5001}"
+
+    volumes:
+      - ./data:/app/data
+      - ./vectorstore:/app/vectorstore
+
+    restart: unless-stopped
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "sh",
+          "-c",
+          "curl --fail http://localhost:${PORT:-5001}/api/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

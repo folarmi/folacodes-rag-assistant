@@ -38,5 +38,77 @@
       }
     ],
     "created_at": "2026-07-30T09:22:41.601845+00:00"
+  },
+  {
+    "id": "452c54ed-0616-40b1-9f66-c02045b59bfe",
+    "question": "How many annual leave days do employees receive?",
+    "answer": "Employees receive 20 working days of paid annual leave per calendar year.",
+    "sources": [
+      {
+        "title": "Leave and Time Off Policy",
+        "section": "5. Annual Leave",
+        "source": "documents/04_Leave_and_Time_Off_Policy.md",
+        "document_type": "policy",
+        "chunk_id": 111,
+        "distance": 0.5379
+      },
+      {
+        "title": "Corporate Definitions and Glossary",
+        "section": "Annual Leave",
+        "source": "documents/00_Corporate_Definitions_and_Glossary.md",
+        "document_type": "policy",
+        "chunk_id": 2,
+        "distance": 0.6738
+      }
+    ],
+    "created_at": "2026-07-30T12:00:32.153399+00:00"
+  },
+  {
+    "id": "6fa6a847-2530-4d56-985c-84c26cb96dbd",
+    "question": "How many annual leave days do employees receive?",
+    "answer": "Employees receive 20 working days of paid annual leave per calendar year.",
+    "sources": [
+      {
+        "title": "Leave and Time Off Policy",
+        "section": "5. Annual Leave",
+        "source": "documents/04_Leave_and_Time_Off_Policy.md",
+        "document_type": "policy",
+        "chunk_id": 111,
+        "distance": 0.5379
+      },
+      {
+        "title": "Corporate Definitions and Glossary",
+        "section": "Annual Leave",
+        "source": "documents/00_Corporate_Definitions_and_Glossary.md",
+        "document_type": "policy",
+        "chunk_id": 2,
+        "distance": 0.6738
+      }
+    ],
+    "created_at": "2026-07-30T12:00:35.024241+00:00"
+  },
+  {
+    "id": "25dd52c2-df9e-4f3b-b722-2615470c9141",
+    "question": "How many annual leave days do employees receive?",
+    "answer": "Employees receive 20 working days of paid annual leave per calendar year.",
+    "sources": [
+      {
+        "title": "Leave and Time Off Policy",
+        "section": "5. Annual Leave",
+        "source": "documents/04_Leave_and_Time_Off_Policy.md",
+        "document_type": "policy",
+        "chunk_id": 111,
+        "distance": 0.5379
+      },
+      {
+        "title": "Corporate Definitions and Glossary",
+        "section": "Annual Leave",
+        "source": "documents/00_Corporate_Definitions_and_Glossary.md",
+        "document_type": "policy",
+        "chunk_id": 2,
+        "distance": 0.6738
+      }
+    ],
+    "created_at": "2026-07-31T08:30:37.767964+00:00"
   }
 ]
