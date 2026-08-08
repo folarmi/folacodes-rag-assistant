@@ -5,7 +5,7 @@ from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_groq import ChatGroq
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
 
 from app.config import (
     EMBEDDING_MODEL,
@@ -63,10 +63,10 @@ class RAGService:
                 "Run `python scripts/ingest.py` first."
             )
 
-        self.embeddings = HuggingFaceEmbeddings(
-            model_name=EMBEDDING_MODEL,
-            model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": True},
+        self.embeddings = FastEmbedEmbeddings(
+            model_name=EMBEDDING_MODEL
+            max_length=512,
+            threads=1,
         )
 
         self.vectorstore = Chroma(
