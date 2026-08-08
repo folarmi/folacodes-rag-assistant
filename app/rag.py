@@ -64,7 +64,7 @@ class RAGService:
             )
 
         self.embeddings = FastEmbedEmbeddings(
-            model_name=EMBEDDING_MODEL
+            model_name=EMBEDDING_MODEL,
             max_length=512,
             threads=1,
         )
